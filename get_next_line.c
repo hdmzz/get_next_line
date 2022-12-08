@@ -1,56 +1,46 @@
 #include "get_next_line.h"
 
-char	*stash_buff(char *src)
-{
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	tmp = malloc(sizeof(char) * (BUFF_SIZE + 1));
-	while (i && src[i] != '\n')
-	{
-		tmp[i] = src[i];
-		i++;
-	}
-}
-
-char	*read_and_save(int fd, char *save)
+char	*read_and_save(int fd, char *str)
 {
 	int			ret;
-	int			new_line_found;
 	int			i;
 	char		*buff;
-	static char	*next;
+	char		*line;
+	static char	*temp;
 
-	new_line_found = 0;
 	buff = malloc(sizeof(char) * (BUFF_SIZE + 1));
-	if (!buff)
+	temp = malloc (sizeof(char) * BUFF_SIZE + 1);
+	line = "";
+	if (!buff || !temp)
 		return (NULL);
-	if (next)
-		save = ft_strjoin(save, next);
-	while (ret = read(fd, buff, BUFF_SIZE) && new_line_found == 0)
+	if (temp[0])
+		line = ft_strjoin(line, temp);
+	while ((ret = read(fd, buff, BUFF_SIZE)))
 	{
 		i = 0;
-		while (buff[i++])
-			if (buff[i] == '\n')
-			{
-				next = ft_strjoin(next, buff + i);
-				buff[i] = '\0';
-				new_line_found = 1;
-			}
-		save = ft_strjoin(save, buff);
+		if (ret == -1)
+			return (NULL);
+		while (buff[i] && buff[i] != '\n')
+			i++;
+		line = ft_strjoin(line, buff);
+		if (buff[i] == '\n')
+		{
+			i++;
+			temp = ft_strjoin(temp, buff + i);
+			break;
+		}
 	}
-	return (save);
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	char	*buff;
+	char	*str;
 
-	buff = read_and_save(fd, buff);
-	if (!buff)
+	str = read_and_save(fd, str);
+	if (!str)
 		return (NULL);
-	return (buff);
+	return (str);
 }
 
 /*char 	*buff;

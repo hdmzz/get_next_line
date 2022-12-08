@@ -1,6 +1,5 @@
 .gitignore
 main.c
 a.out
-test
-*.txt
-.vscode
+a.out.dSYM/
+test.txt
