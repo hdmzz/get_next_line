@@ -9,12 +9,12 @@ char	*read_and_save(int fd, char *str)
 	static char	*temp;
 
 	buff = malloc(sizeof(char) * (BUFF_SIZE + 1));
-	temp = malloc (sizeof(char) * BUFF_SIZE + 1);
 	line = "";
+	if (temp)
+		line = ft_strjoin(line, temp);
+	temp = malloc (sizeof(char) * BUFF_SIZE + 1);
 	if (!buff || !temp)
 		return (NULL);
-	if (temp[0])
-		line = ft_strjoin(line, temp);
 	while ((ret = read(fd, buff, BUFF_SIZE)))
 	{
 		i = 0;
