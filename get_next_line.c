@@ -1,68 +1,63 @@
 #include "get_next_line.h"
 
-char	*read_and_save(int fd, char *str)
+char	*ft_get_line(char *save)
 {
-	int			ret;
-	int			i;
-	char		*buff;
-	char		*line;
-	static char	*temp;
+	int		i;
+	char	*new;
 
-	buff = malloc(sizeof(char) * (BUFF_SIZE + 1));
-	line = "";
-	if (temp)
-		line = ft_strjoin(line, temp);
-	temp = malloc (sizeof(char) * BUFF_SIZE + 1);
-	if (!buff || !temp)
-		return (NULL);
-	while ((ret = read(fd, buff, BUFF_SIZE)))
+	i = 0;
+	while (save[i] && save[i] != '\n')
+		i++;
+	if (save[i] == '\n')
+		new = ft_substr(save, 0, i);
+	return (new);
+}
+
+char	*ft_save(char *to_save)
+{
+	int		i;
+	char	*temp;
+
+	i = 0;
+	while (to_save[i] && to_save[i] != '\n')
+		i++;
+	if (to_save[i] == '\n')
 	{
-		i = 0;
-		if (ret == -1)
-			return (NULL);
-		while (buff[i] && buff[i] != '\n')
-			i++;
-		line = ft_strjoin(line, buff);
-		if (buff[i] == '\n')
-		{
-			i++;
-			temp = ft_strjoin(temp, buff + i);
-			break;
-		}
+		i++;
+		temp = ft_strjoin(temp, to_save + i);
+		return (temp);
 	}
-	return (line);
+	return (NULL);
+}
+
+char	*read_and_save(int fd, char *save)
+{
+	int		ret;
+	char	buff[BUFF_SIZE + 1];
+
+	ret = 1;
+	while (!(ft_strchr(save, '\n') && ret != 0))
+	{
+		ret = read(fd, buff, BUFF_SIZE);
+		if (!ret)
+			return (NULL);
+		buff[ret] = 0;
+		save = ft_strjoin(save, buff);
+	}
+	return (save);
 }
 
 char	*get_next_line(int fd)
 {
-	char	*str;
-
-	str = read_and_save(fd, str);
-	if (!str)
-		return (NULL);
-	return (str);
-}
-
-/*char 	*buff;
+	char		*line;
 	static char	*save;
-	char	*next;
-	static int	nl_start;
-	int ret;
-	static int	i;
-	int	nl_lenght;
-	int found_sep = 0;
 
-	nl_start = 0;
-	ret = 0;
-	buff = malloc(sizeof(char) * BUFF_SIZE);
-	while (!found_sep && (ret = read(fd, buff, BUFF_SIZE)))//les n bytes lus sont stockés dans buff
-	{
-		next = ft_strchr(buff, '\n');
-
-		if (!next)
-			save = ft_strjoin(save, buff);
-		else
-			found_sep = 1;
-		nl_lenght = buff - next;
-	}
-	printf("%s\n", save);*/
+	if (!save)
+		save = ft_strdup("");
+	save = read_and_save(fd, save);
+	if (!save)
+		return (NULL);
+	line = ft_get_line(save);
+	save = ft_save(save);
+	return (line);
+}
