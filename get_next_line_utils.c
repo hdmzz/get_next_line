@@ -52,6 +52,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	new_len = 0;
 	while (s[new_len] && s[new_len] != '\n')
 		new_len++;
+	if (s[new_len] == '\n')
+		new_len += 1;
 	if (!s)
 		return (NULL);
 	if (!(new_len < len))

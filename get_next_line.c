@@ -9,7 +9,7 @@ char	*ft_get_line(char *save)
 	while (save[i] && save[i] != '\n')
 		i++;
 	if (save[i] == '\n')
-		new = ft_substr(save, 0, i);
+		new = ft_substr(save, 0, i + 1);
 	return (new);
 }
 
@@ -19,6 +19,7 @@ char	*ft_save(char *to_save)
 	char	*temp;
 
 	i = 0;
+	temp = ft_strdup("");
 	while (to_save[i] && to_save[i] != '\n')
 		i++;
 	if (to_save[i] == '\n')
@@ -33,12 +34,12 @@ char	*ft_save(char *to_save)
 char	*read_and_save(int fd, char *save)
 {
 	int		ret;
-	char	buff[BUFF_SIZE + 1];
+	char	buff[BUFFER_SIZE + 1];
 
 	ret = 1;
 	while (!(ft_strchr(save, '\n') && ret != 0))
 	{
-		ret = read(fd, buff, BUFF_SIZE);
+		ret = read(fd, buff, BUFFER_SIZE);
 		if (!ret)
 			return (NULL);
 		buff[ret] = 0;
