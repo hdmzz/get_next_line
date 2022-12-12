@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hdamitzi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/12 10:53:17 by hdamitzi          #+#    #+#             */
+/*   Updated: 2022/12/12 10:53:19 by hdamitzi         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
 #ifndef GET_NEXT_LINE_H
 
 # define GET_NEXT_LINE_H
@@ -7,7 +18,9 @@
 # include <stdio.h>
 # include <fcntl.h>
 
-# define BUFFER_SIZE 10
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10
+# endif
 
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(const char *s1, const char *s2);
