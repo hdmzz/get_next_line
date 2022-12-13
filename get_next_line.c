@@ -11,11 +11,21 @@
 /* ************************************************************************** */
 #include "get_next_line.h"
 
+char	*ft_join_and_free(char *str_stic, char *to_save)
+{
+	char	*new;
+
+	new = ft_strjoin(str_stic, to_save);
+	free(str_stic);
+	return (new);
+}
+
 char	*ft_get_line(char *save)
 {
 	int		i;
 	char	*new;
 
+	new = ft_strdup("");
 	i = 0;
 	while (save[i] && save[i] != '\n')
 		i++;
@@ -45,16 +55,22 @@ char	*ft_save(char *to_save)
 char	*read_and_save(int fd, char *save)
 {
 	int		ret;
-	char	buff[BUFFER_SIZE + 1];
+	char	*buff;
 
+	buff = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buff)
+		return (NULL);
 	ret = 1;
 	while (!(ft_strchr(save, '\n') && ret != 0))
 	{
 		ret = read(fd, buff, BUFFER_SIZE);
-		if (!ret)
+		if (ret == -1)
+		{
+			free(buff);
 			return (NULL);
+		}
 		buff[ret] = 0;
-		save = ft_strjoin(save, buff);
+		save = ft_join_and_free(save, buff);
 	}
 	return (save);
 }
@@ -64,6 +80,8 @@ char	*get_next_line(int fd)
 	char		*line;
 	static char	*save;
 
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+		return (NULL);
 	if (!save)
 		save = ft_strdup("");
 	save = read_and_save(fd, save);
