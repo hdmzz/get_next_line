@@ -25,11 +25,13 @@ char	*ft_get_line(char *save)
 	int		i;
 	char	*new;
 
-	new = ft_strdup("");
 	i = 0;
-	while (save[i] && save[i] != '\n')
+	while (save[i] != '\0' && save[i] != '\n')
 		i++;
-	if (save[i] == '\n')
+	new = malloc(sizeof(char) * (i + 1));
+	if (!new)
+		return (NULL);
+	if (save[i] && (save[i] == '\n' || save[i] == '\0'))
 		new = ft_substr(save, 0, i + 1);
 	return (new);
 }
@@ -61,7 +63,7 @@ char	*read_and_save(int fd, char *save)
 	if (!buff)
 		return (NULL);
 	ret = 1;
-	while (!(ft_strchr(save, '\n') && ret != 0))
+	while (!(ft_strchr(save, '\n') && ret > 0))
 	{
 		ret = read(fd, buff, BUFFER_SIZE);
 		if (ret == -1)

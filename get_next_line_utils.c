@@ -45,7 +45,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	int		j;
 
 	new = (char *)malloc(sizeof(char) * ((ft_strlen(s1) + ft_strlen(s2)) + 2));
-	if (!new)
+	if (!new || !s1 || !s2)
 		return (NULL);
 	j = 0;
 	while (*s1)
@@ -62,7 +62,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	size_t	new_len;
 
 	new_len = 0;
-	while (s[new_len] && s[new_len] != '\n')
+	while (s[new_len] != '\0' && s[new_len] != '\n')
 		new_len++;
 	if (s[new_len] == '\n')
 		new_len += 1;
