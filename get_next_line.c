@@ -33,8 +33,14 @@ char	*ft_get_line(char *save)
 	new = malloc(sizeof(char) * (i + 1));
 	if (!new)
 		return (NULL);
-	if (save[i] && (save[i] == '\n' || save[i] == '\0'))
-		new = ft_substr(save, 0, i);
+	i = 0;
+	while (save[i] && save[i] == '\n')
+	{
+		new[i] = save[i];
+		i++;
+	}
+	if (save[i] && save[i] == '\n')
+		save[i++] = '\n';
 	return (new);
 }
 
