@@ -22,16 +22,11 @@
 #  define BUFFER_SIZE 10
 # endif
 
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strjoin(const char *s1, const char *s2);
-char	*read_and_save(int fd, char *save);
-char	*ft_strdup(const char *src);
-char	*ft_get_line(char *save);
-char	*ft_save(char *to_save);
 char	*get_next_line(int fd);
 
+char	*ft_strjoin(const char *s1, const char *s2);
+void	*ft_calloc(size_t elementCount, size_t elementSize);
+char	*ft_strchr(const char *s, int c);
 size_t	ft_strlen(const char *s);
-
-int		ft_strchr(const char *s, int c);
 
 #endif

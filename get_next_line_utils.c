@@ -9,90 +9,80 @@
 /*   Updated: 2022/12/12 10:53:42 by hdamitzi         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-char	*ft_strdup(const char *s1)
-{
-	char	*newstr;
-	char	*buff;
-	int		slen;
-
-	slen = ft_strlen(s1);
-	newstr = (char *)malloc(sizeof(char) * (slen + 1));
-	if (!newstr)
-		return (NULL);
-	buff = (char *)s1;
-	newstr[slen] = 0;
-	while (slen--)
-		newstr[slen] = buff[slen];
-	return (newstr);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	char	*new;
-	int		j;
-
-	new = (char *)malloc(sizeof(char) * ((ft_strlen(s1) + ft_strlen(s2)) + 1));
-	if (!new || !s1 || !s2)
-		return (NULL);
-	j = 0;
-	while (*s1)
-		new[j++] = *s1++;
-	while (*s2)
-		new[j++] = *s2++;
-	new[j] = '\0';
-	return (new);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*new;
-	size_t	new_len;
-
-	new_len = 0;
-	while (s[new_len] != '\0' && s[new_len] != '\n')
-		new_len++;
-	if (s[new_len] == '\n')
-		new_len += 1;
-	if (!s)
-		return (NULL);
-	if (!(new_len < len))
-		new_len = len;
-	new = (char *)malloc(sizeof(char) * (new_len + 1));
-	if (!new)
-		return (NULL);
-	new[new_len] = '\0';
-	while (new_len--)
-		new[new_len] = s[start + new_len];
-	return (new);
-}
-
-int	ft_strchr(const char *s, int c)
+size_t	ft_strlen(const char *str)
 {
 	int	i;
 
 	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
+	while (str[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	int		total;
+	char	*join;
+	int		i;
+	int		j;
+
+	i = 0;
+	total = ft_strlen(s1) + ft_strlen(s2);
+	join = malloc(sizeof(char) * (total + 1));
+	if (!join || !s1 || !s2)
+		return (NULL);
+	while (s1[i] != 0)
 	{
-		if (s[i] == (unsigned char)c)
-			return (1);
+		join[i] = s1[i];
 		i++;
 	}
-	if (s[i] == (unsigned char)c)
-		return (1);
-	return (0);
+	j = 0;
+	while (s2[j] != 0)
+	{
+		join[i] = s2[j];
+		i++;
+		j++;
+	}
+	join[total] = 0;
+	return (join);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	char	*str;
+
+	str = (char *)s;
+	while (*str != c && *str != 0)
+		str++;
+	if (*str == c)
+		return (str);
+	else
+		return (NULL);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	char	*str;
+	size_t	i;
+
+	str = (char *)s;
+	i = 0;
+	while (i < n)
+	{
+		str[i] = '\0';
+		i++;
+	}
+}
+
+void	*ft_calloc(size_t count, size_t size)
+{
+	char	*res;
+
+	res = malloc(size * count);
+	if (!res)
+		return (NULL);
+	ft_bzero(res, size * count);
+	return (res);
 }
