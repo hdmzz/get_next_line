@@ -11,89 +11,83 @@
 /* ************************************************************************** */
 #include "get_next_line.h"
 
-char	*ft_join_and_free(char *str_stic, char *to_save)
+char	*ft_join_and_free(char *buffer, char *buf)
 {
-	char	*new;
-
-	new = ft_strjoin(str_stic, to_save);
-	free(str_stic);
-	return (new);
-}
-
-char	*ft_get_line(char *save)
-{
-	int		i;
-	char	*new;
-
-	i = 0;
-	if (!save[i])
-		return (NULL);
-	while (save[i] != '\0' && save[i] != '\n')
-		i++;
-	new = malloc(sizeof(char) * (i + 1));
-	if (!new)
-		return (NULL);
-	if (save[i] && (save[i] == '\n' || save[i] == '\0'))
-		new = ft_substr(save, 0, i);
-	return (new);
-}
-
-char	*ft_save(char *to_save)
-{
-	int		i;
 	char	*temp;
 
-	i = 0;
-	while (to_save[i] && to_save[i] != '\n')
-		i++;
-	if (!to_save[i])
-	{
-		free(to_save);
-		return (NULL);
-	}
-	temp = malloc(sizeof(char) * (ft_strlen(to_save) - i) + 1);
-	if (!temp)
-		return (NULL);
-	i++;
-	while (to_save[i])
-		*temp++ = to_save[i++];
-	free(to_save);
+	temp = ft_strjoin(buffer, buf);
+	free(buffer);
 	return (temp);
-	/* if (to_save[i] == '\n')
-	{
+}
+
+char	*ft_next(char *buffer)
+{
+	int		i;
+	int		j;
+	char	*line;
+
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
 		i++;
-		temp = ft_strjoin(temp, to_save + i);
-		free(to_save);
-		return (temp);
+	if (!buffer[i])
+	{
+		free(buffer);
+		return (NULL);
 	}
-	return (NULL); */
+	line = ft_calloc((ft_strlen(buffer) - i + 1), sizeof(char));
+	i++;
+	j = 0;
+	while (buffer[i])
+		line[j++] = buffer[i++];
+	free(buffer);
+	return (line);
+}
+
+char	*ft_line(char *buffer)
+{
+	char	*line;
+	int		i;
+
+	i = 0;
+	if (!buffer[i])
+		return (NULL);
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	line = ft_calloc(i + 2, sizeof(char));
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
+	{
+		line[i] = buffer[i];
+		i++;
+	}
+	if (buffer[i] && buffer[i] == '\n')
+		line[i++] = '\n';
+	return (line);
 }
 
 char	*read_and_save(int fd, char *save)
 {
-	int		ret;
-	char	*buff;
+	char	*buffer;
+	int		res;
 
 	if (!save)
-		save = ft_strdup("");
-	buff = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!buff)
-		return (NULL);
-	ret = 1;
-	while (ret > 0)
+		save = ft_calloc(1, 1);
+	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	res = 1;
+	while (res > 0)
 	{
-		ret = read(fd, buff, BUFFER_SIZE);
-		if (ret == -1)
+		res = read(fd, buffer, BUFFER_SIZE);
+		if (res == -1)
 		{
-			free(buff);
+			free(buffer);
 			return (NULL);
 		}
-		buff[ret] = 0;
-		save = ft_join_and_free(save, buff);
-		if (ft_strchr(buff, '\n'))
+		buffer[res] = 0;
+		save = ft_join_and_free(save, buffer);
+		if (ft_strchr(buffer, '\n'))
 			break ;
 	}
-	free(buff);
+	free(buffer);
 	return (save);
 }
 
@@ -107,7 +101,7 @@ char	*get_next_line(int fd)
 	save = read_and_save(fd, save);
 	if (!save)
 		return (NULL);
-	line = ft_get_line(save);
-	save = ft_save(save);
+	line = ft_line(save);
+	save = ft_next(save);
 	return (line);
 }
