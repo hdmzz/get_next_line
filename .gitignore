@@ -1,7 +1,0 @@
-.gitignore
-a.out
-a.out.dSYM/
-main.c
-test.txt
-.vscode
-test
