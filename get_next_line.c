@@ -11,97 +11,89 @@
 /* ************************************************************************** */
 #include "get_next_line.h"
 
-char	*ft_join_and_free(char *buffer, char *buf)
+char	*ft_free(char **str)
 {
-	char	*temp;
-
-	temp = ft_strjoin(buffer, buf);
-	free(buffer);
-	return (temp);
+	free(*str);
+	*str = NULL;
+	return (NULL);
 }
 
-char	*ft_next(char *buffer)
+char	*clean_save(char *save)
 {
-	int		i;
-	int		j;
-	char	*line;
+	char	*new_save;
+	char	*ptr;
+	int		len;
 
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (!buffer[i])
+	ptr = ft_strchr(save, '\n');
+	if (!ptr)
 	{
-		free(buffer);
-		return (NULL);
+		new_save = NULL;
+		return (ft_free(&save));
 	}
-	line = ft_calloc((ft_strlen(buffer) - i + 1), sizeof(char));
-	i++;
-	j = 0;
-	while (buffer[i])
-		line[j++] = buffer[i++];
-	free(buffer);
-	return (line);
+	else
+		len = (ptr - save) + 1;
+	if (!save[len])
+		return (ft_free(&save));
+	new_save = ft_substr(save, len, ft_strlen(save) - len);
+	ft_free(&save);
+	if (!new_save)
+		return (NULL);
+	return (new_save);
 }
 
-char	*ft_line(char *buffer)
+char	*new_line(char *save)
 {
 	char	*line;
-	int		i;
+	char	*ptr;
+	int		len;
 
-	i = 0;
-	if (!buffer[i])
+	ptr = ft_strchr(save, '\n');
+	len = (ptr - save) + 1;
+	line = ft_substr(save, 0, len);
+	if (!line)
 		return (NULL);
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	line = ft_calloc(i + 2, sizeof(char));
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-	{
-		line[i] = buffer[i];
-		i++;
-	}
-	if (buffer[i] && buffer[i] == '\n')
-		line[i++] = '\n';
 	return (line);
 }
 
 char	*read_and_save(int fd, char *save)
 {
+	int		ret;
 	char	*buffer;
-	int		res;
 
-	if (!save)
-		save = ft_calloc(1, 1);
-	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	res = 1;
-	while (res > 0)
+	ret = 1;
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (ft_free(&save));
+	buffer[0] = '\0';
+	while (ret > 0 && !ft_strchr(buffer, '\n'))
 	{
-		res = read(fd, buffer, BUFFER_SIZE);
-		if (res == -1)
+		ret = read (fd, buffer, BUFFER_SIZE);
+		if (ret > 0)
 		{
-			free(buffer);
-			return (NULL);
+			buffer[ret] = '\0';
+			save = ft_strjoin(save, buffer);
 		}
-		buffer[res] = 0;
-		save = ft_join_and_free(save, buffer);
-		if (ft_strchr(buffer, '\n'))
-			break ;
 	}
 	free(buffer);
+	if (ret == -1)
+		return (ft_free(&save));
 	return (save);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*line;
 	static char	*save;
+	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0)
 		return (NULL);
-	save = read_and_save(fd, save);
+	if ((save && !ft_strchr(save, '\n')) || !save)
+		save = read_and_save (fd, save);
 	if (!save)
 		return (NULL);
-	line = ft_line(save);
-	save = ft_next(save);
+	line = new_line(save);
+	if (!line)
+		return (ft_free(&save));
+	save = clean_save(save);
 	return (line);
 }
