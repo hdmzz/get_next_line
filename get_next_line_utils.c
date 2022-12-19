@@ -24,8 +24,8 @@ size_t	ft_strlen(char *s)
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;
-	size_t	i;
-	size_t	c;
+	int		i;
+	int		j;
 
 	if (!s1)
 	{
@@ -40,10 +40,10 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = -1;
 	while (s1[++i])
 		str[i] = s1[i];
-	c = -1;
-	while (s2[++c])
-		str[i + c] = s2[c];
-	str[i + c] = '\0';
+	j = -1;
+	while (s2[++j])
+		str[i + j] = s2[j];
+	str[i + j] = '\0';
 	free(s1);
 	return (str);
 }
